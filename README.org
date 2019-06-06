@@ -1,3 +1,6 @@
+#+OPTIONS: toc:nil
+#+TITLE: README del CHemRock
+#+AUTHOR: CHEMRICK
 * ARACNE-multicore
 
 
@@ -16,6 +19,11 @@ bash run.sh norm-Stage1.tsv &> salida &
 
 como parametro solo se necesita la matriz de expresion.
 
+| col1      | col2         |
+|-----------+--------------|
+| minombre  | asdasdasdasd |
+| asdasdasd | sadasdasd    |
+
 
 ** Compilación
 
@@ -29,4 +37,5 @@ make clean
 make 
 
 #+END_SRC
+
 
