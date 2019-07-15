@@ -5,6 +5,13 @@
 - ``parallel`` -> scripts para correr aracne sobre una plataforma multicore
 - ``work`` -> Carpeta para ejecutar los trabajos
 
+## Prerequisitos
+
+python 2.7
+import pandas as pd
+from multiprocessing import Pool
+from functools import partial
+import os, sys
 
 ## Ejecución
 
