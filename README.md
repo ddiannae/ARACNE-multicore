@@ -7,11 +7,11 @@
 
 ## Prerequisitos
 
-python 2.7
-import pandas as pd
-from multiprocessing import Pool
-from functools import partial
-import os, sys
+- python 2.7 
+- pandas
+- multiprocessing 
+- functools
+- os, sys
 
 ## Ejecución
 
