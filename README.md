@@ -7,7 +7,7 @@
 
 ## Prerequisitos
 
-- python 2.7 
+- python 3
 - pandas
 - multiprocessing 
 - functools

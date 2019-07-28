@@ -10,7 +10,7 @@ def f(x, fexp):
     cmd = cmd + x # concatena el gen
     cmd = cmd + " > salida-" + x + ".log" 
     os.system(cmd)
-    print cmd
+    print(cmd)
 
 if __name__ == '__main__':
     fname = sys.argv[1]
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     colname = sys.argv[3]
     procs = int(sys.argv[4])
 
-    print "ParAracne using " + str(procs) + " processors"
+    print("ParAracne using " + str(procs) + " processors")
 
     df = pd.read_csv(fgenlist, sep='\t')
 # colname es el nombre de la primer columna del archivo genlist
