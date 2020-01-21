@@ -14,7 +14,7 @@ cname=$(head -1 node.list)
 echo "Column name: $cname"
 
 SECONDS=0
-python $RAIZ/aracne-par.py $ftsv node.list $cname 4 &> aracne.log 
+python $RAIZ/aracne-par.py $ftsv node.list $cname $(nproc) &> aracne.log 
 echo "ARACNe time: $(echo $SECONDS/60 | bc -l) minutes."
 
 SECONDS=0
