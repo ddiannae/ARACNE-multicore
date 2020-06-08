@@ -6,7 +6,7 @@ import os, sys
 
 def f(x, fexp):
 #    fexp = "Control-mirnaGen.tsv"
-    cmd = "../ARACNE/aracne2 -H ../ARACNE -i " + fexp + " -p 1 -h "
+    cmd = "../bin/aracne2 -H ../bin -i " + fexp + " -p 1 -h "
     cmd = cmd + x # concatena el gen
     cmd = cmd + " > salida-" + x + ".log" 
     os.system(cmd)

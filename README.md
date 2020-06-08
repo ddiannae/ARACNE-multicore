@@ -25,10 +25,7 @@ Como parámetro sólo se necesita la matriz de expresión.
 ## Compilación de ARACNE
 
 ```bash
-tar xzvf ARACNE2.tgz
-cd ARACNE
-make clean
-make
+bash compile-aracne.sh
 ```
 
 
