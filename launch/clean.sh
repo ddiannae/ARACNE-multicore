@@ -1,1 +1,2 @@
-rm -rf ../bin/*
+#rm -rf ../bin/*
+rm -rf *.log *.sif *.sort
