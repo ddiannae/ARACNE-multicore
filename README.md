@@ -28,4 +28,8 @@ Como parámetro sólo se necesita la matriz de expresión.
 bash compile-aracne.sh
 ```
 
+## Install bioconda
 
+```bash
+bash install-miniconda.sh
+```

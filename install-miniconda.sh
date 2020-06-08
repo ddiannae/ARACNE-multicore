@@ -1,6 +1,5 @@
 #!/bin/bash
-# [[ ! -d extras ]] && echo "creando directorio /root/extras" && mkdir extras
-# cd extras
+
 condadir="${HOME}/bioconda"
 cd /tmp
 wget "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
