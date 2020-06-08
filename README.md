@@ -15,12 +15,9 @@
 
 ## Ejecución
 
-Mover a la carpeta ``work``:
+Copy  matrix gene expression into directory ``launch``:
 
 ``bash run.sh norm-Stage1.tsv &> salida &``
-
-Como parámetro sólo se necesita la matriz de expresión.
-
 
 ## Compilación de ARACNE
 

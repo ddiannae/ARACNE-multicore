@@ -1,7 +1,7 @@
 # Batch run
 # for i in $(ls *.tsv); do bash run.sh $i; done > salida &
 
-partools="/home/jzamora/storage/ARACNE/parallel"
+partools="$(pwd)/../parallel"
 
 ftsv=$1
 
