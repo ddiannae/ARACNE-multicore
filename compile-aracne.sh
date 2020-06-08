@@ -5,8 +5,9 @@ tar xzf ARACNE.src.tar.gz
 cd ARACNE
 make clean
 make
-cd ../..
-ln -s bin src/ARACNE
+cd ../../
+pwd
+ln -s src/ARACNE bin
 
 [[ -f "bin/usage.txt" ]] && echo "Finished successfully." && exit 0
 echo "Something was wrong"
