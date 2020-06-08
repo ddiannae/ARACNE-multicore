@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd src
-tar xzvf ARACNE2.tgz
+tar xzvf ARACNE.src.tar.gz
 cd ARACNE
 make clean
 make
