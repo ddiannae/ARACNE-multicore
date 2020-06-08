@@ -6,4 +6,4 @@ cd ARACNE
 make clean
 make
 cd ..
-ln -s ARACNE ../bin
+ln -s ../bin ARACNE 
