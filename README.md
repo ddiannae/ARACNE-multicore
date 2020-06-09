@@ -19,6 +19,10 @@ Copy  matrix gene expression into directory ``launch``:
 
 ``bash run.sh norm-Stage1.tsv &> salida &``
 
+For run multiple *tsvs*:
+
+``for i in $(ls *.tsv); do bash run.sh $i; done > salida &``
+
 ## Compilación de ARACNE
 
 ```bash
