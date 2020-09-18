@@ -1,5 +1,6 @@
 import sys
 import pandas as pd
+import os
 
 fname = sys.argv[1]
 
@@ -14,5 +15,8 @@ filtro = df['gname'].str.contains("^[0-9]+\.[0-9]*")
 df = df[~filtro]
 print(df)
 
-fout = fname.split(".")[0] + ".expr.tsv"
+
+fout = basename = os.path.basename(fname)
+fout = fout.split(".")[0] + ".expr.tsv"
+print(fout)
 df.to_csv(fout, sep="\t", index=False)
