@@ -17,6 +17,6 @@ print(df)
 
 
 fout = basename = os.path.basename(fname)
-fout = fout.split(".")[0] + ".expr.tsv"
+fout = fout.split(".")[0] + "-expr.tsv"
 print(fout)
 df.to_csv(fout, sep="\t", index=False)
