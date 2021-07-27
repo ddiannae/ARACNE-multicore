@@ -21,7 +21,7 @@ From: continuumio/miniconda3
     fi
     awk '{print $1}' $1 > gene.list
 	mkdir output
-	python /ARACNE-multicore/parallel/aracne-par.py $1 gene.list $2 output
+	python /ARACNE-multicore/parallel/aracne-par.py $1 gene.list $2 $3 output
 
 %environment
     export ARACNEHOME=/ARACNE-multicore/src/ARACNE
