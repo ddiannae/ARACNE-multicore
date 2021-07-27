@@ -14,8 +14,8 @@ def f(x, fexp, outd, pval):
 if __name__ == '__main__':
     fname = sys.argv[1]
     fgenlist = sys.argv[2]
-    procs = int(sys.argv[3])
-    pvalue = sys.argv[4]
+    pvalue = sys.argv[3]
+    procs = int(sys.argv[4])
     outdir = sys.argv[5]
     
     print("ParAracne using " + str(procs) + " processors")
