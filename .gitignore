@@ -1,1 +1,6 @@
 sftp-config.json
+*.ipynb
+src/ARACNE/
+src/ARACNE/*
+src/contrib/
+src/contrib/*
