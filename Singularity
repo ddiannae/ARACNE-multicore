@@ -13,9 +13,11 @@ From: continuumio/miniconda3
     cd ARACNE
     make clean
     make
+    cd ../../
+    python3 setup.py install
 
 %runscript 
-    python $@ 
+    python $@
 
 %environment
     export ARACNEHOME=/ARACNE-multicore/src/ARACNE
