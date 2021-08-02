@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import os
 
-class MultiAracne:
+class Aracne:
 
     def __init__(self, matrix_file, genes_file=None):
 
@@ -22,7 +22,7 @@ class MultiAracne:
             with open(genes_file, "r") as file:
                 self.genes = [line.strip() for line in file]
 
-    def run_aracne(self, outdir, processes=None, pval=1, aracnehome=None):  
+    def run(self, outdir, processes=None, pval=1, aracnehome=None):  
 
         if not os.path.exists(outdir) or not os.path.isdir(outdir):
             raise IOError(f"Output directory does not exist: {outdir}")
