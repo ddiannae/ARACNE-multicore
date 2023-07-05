@@ -5,3 +5,4 @@ src/ARACNE/*
 src/contrib/
 src/contrib/*
 *.ipynb_checkpoints
+*.sif
