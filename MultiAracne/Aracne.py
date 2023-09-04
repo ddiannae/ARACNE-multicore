@@ -6,6 +6,7 @@ from functools import partial
 import pandas as pd
 import numpy as np
 import os
+import time
 
 class Aracne:
 
@@ -18,10 +19,14 @@ class Aracne:
             with open(matrix_file) as file_in:
                 for line in file_in:
                     self.genes.append(line.split("\t")[0])
+            # First line has headers
+            self.genes.pop(0)
         else:    
             with open(genes_file, "r") as file:
                 self.genes = [line.strip() for line in file]
 
+        self.genes.sort()
+            
     def run(self, outdir, processes=None, pval=1, aracnehome=None):  
 
         if not os.path.exists(outdir) or not os.path.isdir(outdir):
@@ -47,100 +52,81 @@ class Aracne:
         cmd = (f"{os.environ.get('ARACNEHOME')}/aracne2 -H"
             f" {os.environ.get('ARACNEHOME')} -i {self.matrix_file}"
             f" -p {pval} -h {gene}" 
-            f" -o {outdir}/{gene}.adj > {outdir}/{gene}.log")
+            f" -o {outdir}/{gene.replace('/', '-') if '/' in gene else gene}.adj >"
+            f" {outdir}/{gene.replace('/', '-') if '/' in gene else gene}.log")
         os.system(cmd)
-
-    def join_adj(self, outdir, outfile="output.adj"):
-
+    
+    ### Build full matrix 
+    def build_matrix(self, outdir, outfile):
+        
         if not os.path.exists(outdir) or not os.path.isdir(outdir):
             raise IOError(f"Output directory does not exist: {outdir}")
-
+        
         file_names = [outdir+"/"+fn for fn in os.listdir(outdir) if fn.endswith(".adj")]
-        print(f"Joining {len(file_names)}*.adj files in {outdir}") 
 
-        wlines = []
-        for fname in file_names:
-            fh = open(fname, "r")
-            lines = fh.read().splitlines()
-            if lines:
-                last_line = lines[-1]
-                wlines.append(last_line)
-            fh.close()
-        
-        with open(outfile, 'w') as f:
-            for l in wlines:
-                if not l.startswith(">"):
-                    f.write("%s\n" % l)
-    
-    @staticmethod
-    def adj_to_matrix(adjfile, output, genes_file=None):
-        
-        print("Reading file")
-        with open(adjfile) as file_in:
-            lines = []
-            for line in file_in:
-                lines.append(line.split("\t"))
-        
-        if not genes_file:
-             genes = [l[0] for l in lines]
-        else:     
-            with open(genes_file) as file_in:
-                genes = []
-                for line in file_in:
-                    genes.append(line.strip())
-        
-        print("Building dictionaries")
-        mi_genes = [l[0] for l in lines]
-        mi_dicts = [dict([(l[i], float(l[i+1])) for i in range(1, len(l), 2)]) for l in lines]
-        
-        print("Building all genes series")
-        mi_series = [pd.Series(mid) for mid in mi_dicts]
-        genes_serie = pd.Series(np.nan, index=genes)
-        sum_series = [s.add(genes_serie, fill_value = 0) for s in mi_series]
-        
+        mis = []
+
+        print("Reading files")
+        start_time = time.time()
+
+        for gene in self.genes:
+            fname = outdir+"/"+gene+".adj"
+            if not os.path.exists(fname):
+                raise IOError(f"Missing aracne file: {gene}.adj")
+
+            with open(fname, "r") as fh:
+                lines = fh.readlines()                
+                if lines:
+                    last_line = lines[-1]
+                    if not last_line.startswith(">"):
+                        line = last_line.split("\t")
+                        mis.append(pd.Series([float(line[i+1]) for i in range(1, len(line), 2)], 
+                                  index=[line[i] for i in range(1, len(line), 2)], name=gene))
+        print("--- %s seconds ---" % (time.time() - start_time))
+
         print("Building data frame")
-        mi_df = pd.concat(sum_series, axis=1)
-        mi_df.columns = mi_genes
+        start_time = time.time()
+        mi_df = pd.concat(mis, axis=1)
+        print("--- %s seconds ---" % (time.time() - start_time))
+        mi_df.to_csv(outfile)
+
+    def build_triu(self, outdir, outfile):
         
-        print("Adding missing columns")
-        missing_columns = [c for c in mi_df.index if c not in mi_df.columns]
-        mi_df[missing_columns] = np.nan
+        if not os.path.exists(outdir) or not os.path.isdir(outdir):
+            raise IOError(f"Output directory does not exist: {outdir}")
         
-        print("Sorting data frame")
-        mi_df.sort_index(axis=0, inplace=True)
-        mi_df.sort_index(axis=1, inplace=True)
-        cols = mi_df.columns
-        
-        print("Getting triangular matrix")
-        mi_matrix = mi_df.to_numpy()
+        file_names = [outdir+"/"+fn for fn in os.listdir(outdir) if fn.endswith(".adj")]
+
+        mi_matrix = []
+
+        print("Reading files and building matrix")
+        start_time = time.time()
+
+        for gene in self.genes:
+            fname = outdir+"/"+gene+".adj"
+            if not os.path.exists(fname):
+                raise IOError(f"Missing aracne file: {gene}.adj")
+
+            with open(fname, "r") as fh:
+                lines = fh.readlines()                
+                if lines:
+                    last_line = lines[-1]
+                    if not last_line.startswith(">"):
+                        line = last_line.split("\t")
+                        serie = pd.Series([float(line[i+1]) for i in range(1, len(line), 2)], 
+                                  index=[line[i] for i in range(1, len(line), 2)])
+                        serie = pd.concat([pd.Series([1], index=[gene]), serie])
+                        serie.sort_index(inplace=True)
+                        mi_matrix.append(np.array(serie.array, ndmin=2))
+
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        print("Building data frame")
+        mi_matrix = np.concatenate(mi_matrix)
         mi_matrix = np.triu(mi_matrix)
-        
-        print("Saving data frame")
-        mi_df = pd.DataFrame(data=mi_matrix, index=cols, columns=cols)
+        mi_df = pd.DataFrame(data=mi_matrix, index=self.genes, columns=self.genes)
+        start_time = time.time()
+        print("--- %s seconds ---" % (time.time() - start_time))
         mi_df.replace(0, np.nan, inplace=True)
-        mi_df.to_csv(output, index=False)
-        
-    @staticmethod
-    def adj_to_unsif(adjfile, output):
-        
-        print("Reading values")
-        with open(adjfile) as file_in:
-            mi_vals = []
-            for line in file_in:
-                line_vals = line.split("\t")
-                for i in range(1, len(line_vals), 2):
-                    st = [line_vals[0], line_vals[i]]
-                    st.sort()
-                    st.append(float(line_vals[i+1]))
-                    mi_vals.append(st)
-        
-        print(len(mi_vals))
-        print("Building sif")
-        df = pd.DataFrame(mi_vals, columns=["source", "target", "mi"])
-        df.sort_values(by = ["mi"], ascending = False, inplace = True)
-        df.drop_duplicates(inplace = True)
-        print(df.shape)
-        print("Saving data frame")
-        df.to_csv(output, sep="\t", index=False, header=False)
-
-
+        mi_df.to_csv(outfile, index=False)
+    
