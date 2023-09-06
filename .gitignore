@@ -6,3 +6,4 @@ src/contrib/
 src/contrib/*
 *.ipynb_checkpoints
 *.sif
+*/__pycache__
