@@ -4,8 +4,6 @@ From: continuumio/miniconda3
 %post
     apt-get update
     apt-get install -y build-essential git
-
-    # /opt/conda/bin/conda install -y numpy pandas
     
     git clone https://github.com/ddiannae/ARACNE-multicore
     cd ARACNE-multicore/src
@@ -15,8 +13,9 @@ From: continuumio/miniconda3
     make
     cd ../../
     cat MultiAracne/Aracne.py
-    conda install conda-build
-    conda develop .
+    /opt/conda/bin/conda install -y -c conda-forge pip numpy pandas conda-build
+
+    /opt/conda/bin/conda develop .
 
 %runscript 
     python $@
