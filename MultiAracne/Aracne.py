@@ -94,7 +94,7 @@ class Aracne:
         mi_matrix = np.triu(mi_matrix)
         mi_df = pd.DataFrame(data=mi_matrix, index=self.genes, columns=self.genes)
         print("--- %s seconds ---" % (time.time() - start_time))
-        mi_df.to_csv(outfile, False)
+        mi_df.to_csv(outfile, index=False)
 
     def build_triu(self, outdir, outfile):
         
