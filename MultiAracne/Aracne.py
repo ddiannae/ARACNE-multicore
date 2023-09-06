@@ -57,7 +57,7 @@ class Aracne:
         os.system(cmd)
     
     ### Build full matrix 
-    def build_matrix(self, outdir, outfile):
+    def build_triu_missing_genes(self, outdir, outfile):
         
         if not os.path.exists(outdir) or not os.path.isdir(outdir):
             raise IOError(f"Output directory does not exist: {outdir}")
@@ -80,15 +80,21 @@ class Aracne:
                     last_line = lines[-1]
                     if not last_line.startswith(">"):
                         line = last_line.split("\t")
-                        mis.append(pd.Series([float(line[i+1]) for i in range(1, len(line), 2)], 
-                                  index=[line[i] for i in range(1, len(line), 2)], name=gene))
+                        mis.append(pd.Series([float(line[i+1]) for i in range(1, len(line), 2)] + [1], 
+                                  index=[line[i] for i in range(1, len(line), 2)] + [gene], name=gene))
+                        
         print("--- %s seconds ---" % (time.time() - start_time))
 
         print("Building data frame")
         start_time = time.time()
         mi_df = pd.concat(mis, axis=1)
+        mi_df.sort_index(axis=0, inplace=True)
+        mi_df.sort_index(axis=1, inplace=True)
+        mi_matrix = mi_df.to_numpy()
+        mi_matrix = np.triu(mi_matrix)
+        mi_df = pd.DataFrame(data=mi_matrix, index=self.genes, columns=self.genes)
         print("--- %s seconds ---" % (time.time() - start_time))
-        mi_df.to_csv(outfile)
+        mi_df.to_csv(outfile, False)
 
     def build_triu(self, outdir, outfile):
         
@@ -127,6 +133,5 @@ class Aracne:
         mi_df = pd.DataFrame(data=mi_matrix, index=self.genes, columns=self.genes)
         start_time = time.time()
         print("--- %s seconds ---" % (time.time() - start_time))
-        mi_df.replace(0, np.nan, inplace=True)
         mi_df.to_csv(outfile, index=False)
     
