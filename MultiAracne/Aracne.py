@@ -93,6 +93,7 @@ class Aracne:
         mi_matrix = mi_df.to_numpy()
         mi_matrix = np.triu(mi_matrix)
         mi_df = pd.DataFrame(data=mi_matrix, index=self.genes, columns=self.genes)
+        mi_df.replace(0, np.nan, inplace=True)
         print("--- %s seconds ---" % (time.time() - start_time))
         mi_df.to_csv(outfile, index=False)
 
@@ -128,10 +129,11 @@ class Aracne:
         print("--- %s seconds ---" % (time.time() - start_time))
 
         print("Building data frame")
+        start_time = time.time()
         mi_matrix = np.concatenate(mi_matrix)
         mi_matrix = np.triu(mi_matrix)
         mi_df = pd.DataFrame(data=mi_matrix, index=self.genes, columns=self.genes)
-        start_time = time.time()
+        mi_df.replace(0, np.nan, inplace=True)
         print("--- %s seconds ---" % (time.time() - start_time))
         mi_df.to_csv(outfile, index=False)
     
