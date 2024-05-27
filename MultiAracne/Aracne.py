@@ -92,7 +92,7 @@ class Aracne:
         mi_df.sort_index(axis=1, inplace=True)
         mi_matrix = mi_df.to_numpy()
         mi_matrix = np.triu(mi_matrix)
-        mi_df = pd.DataFrame(data=mi_matrix, index=self.genes, columns=self.genes)
+        mi_df = pd.DataFrame(data=mi_matrix, index=mi_df.index.tolist(), columns=mi_df.columns.tolist())
         mi_df.replace(0, np.nan, inplace=True)
         print("--- %s seconds ---" % (time.time() - start_time))
         mi_df.to_csv(outfile, index=False)
