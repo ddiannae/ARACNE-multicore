@@ -136,4 +136,41 @@ class Aracne:
         mi_df.replace(0, np.nan, inplace=True)
         print("--- %s seconds ---" % (time.time() - start_time))
         mi_df.to_csv(outfile, index=False)
-    
+
+     ### Build full matrix 
+    def build_nm_matrix(self, outdir, outfile, genes_filter):
+        
+        if not os.path.exists(outdir) or not os.path.isdir(outdir):
+            raise IOError(f"Output directory does not exist: {outdir}")
+        
+        file_names = [outdir+"/"+fn for fn in os.listdir(outdir) if fn.endswith(".adj")]
+
+        mis = []
+
+        print("Reading files")
+        start_time = time.time()
+
+        for gene in self.genes:
+            fname = outdir+"/"+gene+".adj"
+            if not os.path.exists(fname):
+                raise IOError(f"Missing aracne file: {gene}.adj")
+
+            with open(fname, "r") as fh:
+                lines = fh.readlines()                
+                if lines:
+                    last_line = lines[-1]
+                    if not last_line.startswith(">"):
+                        line = last_line.split("\t")
+                        mis.append(pd.Series([float(line[i+1]) for i in range(1, len(line), 2)] + [1], 
+                                  index=[line[i] for i in range(1, len(line), 2)] + [gene], name=gene).loc[genes_filter])
+                        
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        print("Building data frame")
+        start_time = time.time()
+        mi_df = pd.concat(mis, axis=1)
+        mi_df.sort_index(axis=0, inplace=True)
+        mi_df.sort_index(axis=1, inplace=True)
+        print("--- %s seconds ---" % (time.time() - start_time))
+        mi_df.to_csv(outfile, index=row_names)
+
