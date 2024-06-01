@@ -172,5 +172,5 @@ class Aracne:
         mi_df.sort_index(axis=0, inplace=True)
         mi_df.sort_index(axis=1, inplace=True)
         print("--- %s seconds ---" % (time.time() - start_time))
-        mi_df.to_csv(outfile, index=row_names)
+        mi_df.to_csv(outfile, index=True)
 
